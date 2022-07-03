@@ -1,6 +1,6 @@
 {   
-    "name":"PWA-Budgetinatoratron",
-    "short_name":"PWA-Budgetinator",
+    "name":"PWA-Budget-Trackinator",
+    "short_name":"BudgetTrackinator",
     "icons": [
         {
           "src": "icons/icon-512x512.png",

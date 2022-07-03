@@ -153,7 +153,4 @@ document.querySelector("#sub-btn").onclick = function() {
   sendTransaction(false);
 };
 
-document.querySelector("#del-btn").addEventListener("click", function(event) {
-  event.preventDefault();
-  deletePending();
-});
+
