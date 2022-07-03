@@ -22,63 +22,36 @@ const FILES_TO_CACHE = [
 
 
 
-// listens for 'install' and then caches data. 
-self.addEventListener("install", function(evt) {
-  evt.waitUntil(
+
+//  install function
+self.addEventListener('install', event => {
+  event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
-      console.log("Your files were pre-cached successfully!");
       return cache.addAll(FILES_TO_CACHE);
-    })
-  );
-
-  self.skipWaiting();
+    }))
 });
 
-// activate service worker on event removes data if key doesnt match cache_name or data_cache_name
-self.addEventListener("activate", function(evt) {
-  evt.waitUntil(
-    caches.keys().then(keyList => {
+// activate function
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(keys => {
       return Promise.all(
-        keyList.map(key => {
-          if (key !== CACHE_NAME && key !== DATA_CACHE_NAME) {
-            console.log("Removing old cached data", key);
-            return caches.delete(key);
-          }
-        })
+        keys
+          .filter(key => key !== CACHE_NAME)
+          .map(key => caches.delete(key))
       );
-    })
-  );
-
-  self.clients.claim();
+    }
+  ));
 });
 
-// fetch data from the cache and respond with that data from DATA_CACHE_NAME, and CACHE_NAME
-self.addEventListener("fetch", evt => {
-    if(evt.request.url.includes('/api/')) {
-        console.log('[Service Worker] Fetch(data)', evt.request.url);
-    
-evt.respondWith(
-                caches.open(DATA_CACHE_NAME).then(cache => {
-                return fetch(evt.request)
-                .then(response => {
-                    if (response.status === 200){
-                        cache.put(evt.request.url, response.clone());
-                    }
-                    return response;
-                })
-                .catch(err => {
-                    return cache.match(evt.request);
-                });
-            })
-            );
-            return;
-        }
-
-evt.respondWith(
-    caches.open(CACHE_NAME).then( cache => {
-      return cache.match(evt.request).then(response => {
-        return response || fetch(evt.request);
-      });
-    })
-  );
-});
+// fetch function
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request).then(response => { 
+      if (response) {
+        return response;
+      }
+      console.log('fetching');
+      return fetch(event.request);
+    }))
+})
