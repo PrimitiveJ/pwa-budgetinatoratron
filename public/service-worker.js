@@ -20,9 +20,6 @@ const FILES_TO_CACHE = [
   './icons/icon-72x72.png'
 ];
 
-
-
-
 //  Listens for installation and opens cache to add files
 self.addEventListener('install', event => {
   event.waitUntil(
