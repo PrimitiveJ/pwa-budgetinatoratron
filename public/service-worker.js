@@ -42,13 +42,40 @@ self.addEventListener('activate', event => {
 });
 
 // listens for a fetch request and then responds with a fetch upon the request matching what's in the cache. 
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request).then(response => { 
-      if (response) {
-        return response;
-      }
-      console.log('fetching');
-      return fetch(event.request);
-    }))
-})
+self.addEventListener('fetch', function(evt) {
+  if (evt.request.url.includes('/api/')) {
+    evt.respondWith(
+      caches
+        .open(CACHE_NAME)
+        .then(cache => {
+          return fetch(evt.request)
+            .then(response => {
+              // If the response was good, clone it and store it in the cache.
+              if (response.status === 200) {
+                cache.put(evt.request.url, response.clone());
+              }
+
+              return response;
+            })
+            .catch(err => {
+              // Network request failed, try to get it from the cache.
+              return cache.match(evt.request);
+            });
+        })
+        .catch(err => console.log(err))
+    );
+
+    return;
+  }
+
+  evt.respondWith(
+    fetch(evt.request).catch(function() {
+      return caches.match(evt.request).then(function(response) {
+        if (response) {
+          return response;
+        } 
+      });
+    })
+  );
+});
+
