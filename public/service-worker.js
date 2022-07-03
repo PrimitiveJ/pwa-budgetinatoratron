@@ -2,7 +2,7 @@
 const APP_PREFIX = 'BudgetTrackinator-';
 const VERSION = '1.0.0';
 const CACHE_NAME = `${APP_PREFIX}${VERSION}`;
-
+//Comment
 //Set up const for files to be cached to manifest.
 const FILES_TO_CACHE = [
   './index.html',
