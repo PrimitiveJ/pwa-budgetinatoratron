@@ -23,7 +23,7 @@ const FILES_TO_CACHE = [
 
 
 
-//  install function
+//  Listens for installation and opens cache to add files
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
@@ -31,7 +31,7 @@ self.addEventListener('install', event => {
     }))
 });
 
-// activate function
+// listens for activation and conditionally deletes caches that don't match the key
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys => {
@@ -44,7 +44,7 @@ self.addEventListener('activate', event => {
   ));
 });
 
-// fetch function
+// listens for a fetch request and then responds with a fetch upon the request matching what's in the cache. 
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request).then(response => { 
