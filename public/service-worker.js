@@ -1,7 +1,7 @@
 
 //Set up const for files to be cached to manifest.
 const FILES_TO_CACHE = [
-    "/", "/index.html","index.js", "/db.js", "/style.css"];
+    "/", "/index.html","/index.js", "/db.js", "/styles.css"];
 
 //Defines names to reference cache. 
 const CACHE_NAME = "static-cache-v2";
@@ -19,14 +19,14 @@ self.addEventListener("install", function(evt) {
   self.skipWaiting();
 });
 
-// activate service worker on event
+// activate service worker on event removes data if key doesnt match cache_name or data_cache_name
 self.addEventListener("activate", function(evt) {
   evt.waitUntil(
     caches.keys().then(keyList => {
       return Promise.all(
         keyList.map(key => {
           if (key !== CACHE_NAME && key !== DATA_CACHE_NAME) {
-            console.log("Removing old cache data", key);
+            console.log("Removing old cached data", key);
             return caches.delete(key);
           }
         })

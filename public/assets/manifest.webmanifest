@@ -1,8 +1,0 @@
-{   
-    "name":"PWA-Budgetinatoratron",
-    "short_name":"PWA-Budgetinator",
-    "theme_color":"#ffffff",
-    "background_color":"#ffffff",
-    "start_url":"/",
-    "display":"standalone"
-}
