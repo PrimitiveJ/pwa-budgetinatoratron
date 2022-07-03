@@ -1,12 +1,13 @@
 let transactions = [];
 let myChart;
 
+//fetch to get transactions from api route and populate the application with data. 
 fetch("/api/transaction")
   .then(response => {
     return response.json();
   })
   .then(data => {
-    // save db data on global variable
+    // save db data (global variable)
     transactions = data;
 
     populateTotal();
@@ -15,7 +16,7 @@ fetch("/api/transaction")
   });
 
 function populateTotal() {
-  // reduce transaction amounts to a single total value
+  // reduce method called on transactions to combine the stored transactions to a single value. 
   let total = transactions.reduce((total, t) => {
     return total + parseInt(t.value);
   }, 0);
