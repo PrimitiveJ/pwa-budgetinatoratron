@@ -33,6 +33,8 @@ function checkDatabase() {
   const store = transaction.objectStore("pending");
   const getAll = store.getAll();
 
+  //upon success of store.getAll():
+  //Conditional: if results are greater than 0, run fetch to bulk transactions and accept JSON as response.
   getAll.onsuccess = function () {
     if (getAll.result.length > 0) {
       fetch("/api/transaction/bulk", {
