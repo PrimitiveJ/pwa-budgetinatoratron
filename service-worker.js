@@ -36,3 +36,34 @@ self.addEventListener("activate", function(evt) {
 
   self.clients.claim();
 });
+
+// fetch data from the cache and respond with that data from DATA_CACHE_NAME, and CACHE_NAME
+self.addEventListener("fetch", evt => {
+    if(evt.request.url.includes('/api/')) {
+        console.log('[Service Worker] Fetch(data)', evt.request.url);
+    
+evt.respondWith(
+                caches.open(DATA_CACHE_NAME).then(cache => {
+                return fetch(evt.request)
+                .then(response => {
+                    if (response.status === 200){
+                        cache.put(evt.request.url, response.clone());
+                    }
+                    return response;
+                })
+                .catch(err => {
+                    return cache.match(evt.request);
+                });
+            })
+            );
+            return;
+        }
+
+evt.respondWith(
+    caches.open(CACHE_NAME).then( cache => {
+      return cache.match(evt.request).then(response => {
+        return response || fetch(evt.request);
+      });
+    })
+  );
+});
